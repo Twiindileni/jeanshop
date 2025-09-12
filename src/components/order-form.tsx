@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ButtonLoader } from "./fashion-loader";
+import { PaymentButton } from "./payment-button";
 
 interface OrderFormProps {
   productId: string;
@@ -198,8 +199,14 @@ export function OrderForm({ productId, productTitle, productPrice, onSubmit }: O
           />
         </div>
 
-        {/* Submit Button */}
-        <div className="pt-4">
+        {/* Payment Section */}
+        <div className="pt-4 space-y-4">
+          <div className="text-center">
+            <h3 className="text-lg font-semibold text-gray-800 mb-2">Payment Options</h3>
+            <p className="text-sm text-gray-600 mb-4">Choose your preferred payment method</p>
+          </div>
+          
+          {/* Place Order Button */}
           <button
             type="submit"
             disabled={isSubmitting}
@@ -217,6 +224,12 @@ export function OrderForm({ productId, productTitle, productPrice, onSubmit }: O
               </>
             )}
           </button>
+          
+          {/* Card Payment Button */}
+          <div className="text-center">
+            <p className="text-sm text-gray-500 mb-2">or</p>
+            <PaymentButton />
+          </div>
         </div>
       </form>
     </div>

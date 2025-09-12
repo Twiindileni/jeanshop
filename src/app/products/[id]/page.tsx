@@ -1,5 +1,6 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatNAD } from "@/lib/currency";
+import { PaymentButton } from "@/components/payment-button";
 
 export default async function ProductDetail({ params }: { params: { id: string } }) {
   const supabase = await getSupabaseServerClient();
@@ -121,14 +122,7 @@ export default async function ProductDetail({ params }: { params: { id: string }
             </a>
             
             {/* Buy Now Button - Secondary Action */}
-            <form action="/api/stripe/checkout" method="post">
-              <input type="hidden" name="productId" value={product?.id} />
-              <input type="hidden" name="quantity" value={1} />
-              <button className="w-full bg-black text-white rounded-lg px-6 py-3 text-center font-medium hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-2">
-                <span>💳</span>
-                <span>Buy with Card</span>
-              </button>
-            </form>
+            <PaymentButton />
           </div>
           
           {/* Trust Indicators */}

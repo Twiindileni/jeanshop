@@ -34,8 +34,8 @@ export default function RootLayout({
               <nav className="flex items-center gap-8 text-sm">
                 <a href="/" className="hover:opacity-70">HOME</a>
                 <a href="/products" className="hover:opacity-70">SHOP</a>
-                <a href="#" className="hover:opacity-70">ABOUT US</a>
-                <a href="#" className="hover:opacity-70">CONTACT</a>
+                <a href="/about" className="hover:opacity-70">ABOUT US</a>
+                <a href="/contact" className="hover:opacity-70">CONTACT</a>
               </nav>
               <AuthNav />
             </div>
