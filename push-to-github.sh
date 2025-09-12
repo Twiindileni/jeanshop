@@ -1,42 +1,34 @@
 #!/bin/bash
 
-echo "🚀 Starting git push process..."
+echo "🚀 Let's push your jeans shop to GitHub together!"
+echo ""
 
-# Check if we're in the right directory
+# Check current directory
 echo "📁 Current directory:"
 pwd
+echo ""
+
+# Update remote URL to the correct repository
+echo "🔗 Setting correct remote URL..."
+git remote set-url origin https://github.com/Twiindileni/jeanshop.git
+
+# Verify remote URL
+echo "✅ Verifying remote URL:"
+git remote -v
+echo ""
 
 # Check git status
-echo "📊 Git status:"
+echo "📊 Current git status:"
 git status
-
-# Add all files
-echo "➕ Adding all files..."
-git add .
-
-# Commit changes
-echo "💾 Committing changes..."
-git commit -m "feat: Add About Us and Contact Us pages with team information
-
-- Add comprehensive About Us page with company story and values
-- Add Contact Us page with contact form and information
-- Update team section with Assampta Gahutu (Founder) and Cleo Thomas (Tech Lead)
-- Add payment message system for PAY to CELL
-- Update navigation links to new pages
-- Improve overall user experience and site navigation"
-
-# Check remote
-echo "🔗 Checking remote repositories..."
-git remote -v
-
-# Add remote if not exists
-if ! git remote get-url origin > /dev/null 2>&1; then
-    echo "➕ Adding remote origin..."
-    git remote add origin https://github.com/Twiindileni/jeanshop.git
-fi
+echo ""
 
 # Push to GitHub
 echo "🚀 Pushing to GitHub..."
-git push origin main
+echo "This will upload all your changes to the repository."
+echo ""
 
-echo "✅ Git push completed!"
+git push -u origin main
+
+echo ""
+echo "✅ Done! Your jeans shop is now on GitHub!"
+echo "🌐 Visit: https://github.com/Twiindileni/jeanshop"
