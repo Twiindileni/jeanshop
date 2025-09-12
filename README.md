@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Jeans Shop - Next.js 14 + Supabase
 
-## Getting Started
+Modern jeans eCommerce with authentication, dashboard, product management, checkout, analytics, and Supabase Storage.
 
-First, run the development server:
+## Tech
+- Next.js 14 (App Router), TypeScript, Tailwind CSS
+- Supabase (Auth, Database, Storage)
+- Ready for Vercel
 
+## Setup
+1. Clone and install
+```bash
+npm install
+```
+2. Env vars (`.env.local`)
+```
+NEXT_PUBLIC_SUPABASE_URL=your-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
+SUPABASE_SERVICE_ROLE_KEY=optional-for-admin-scripts
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+3. Database
+- In Supabase SQL editor, run `supabase/schema.sql` to create tables, triggers, and RLS.
+- Create a bucket `product-images` (public or with signed URLs per your policy).
+
+## Scripts
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build && npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
+- Auth: register, login, reset password, logout
+- Profiles auto-create and wallet balance
+- Dashboard: wallet deposit, cart, orders
+- Products grid with filters
+- Admin: products CRUD (basic), image upload API, analytics
+- Checkout: wallet purchase from cart
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deploy to Vercel
+- Add environment variables in Vercel Project Settings
+- Set `NEXT_PUBLIC_SITE_URL` to your production domain
+- Re-run DB SQL and create `product-images` bucket in Supabase

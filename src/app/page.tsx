@@ -1,103 +1,114 @@
-import Image from "next/image";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { formatNAD } from "@/lib/currency";
+import Link from "next/link";
+import { LoadingImage } from "@/components/loading-image";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const supabase = await getSupabaseServerClient();
+  const { data: settingsRows } = await supabase
+    .from("site_settings")
+    .select("cover_image_path, updated_at")
+    .order("updated_at", { ascending: false })
+    .limit(1);
+  const settings = (settingsRows ?? [])[0];
+  let coverUrl = settings?.cover_image_path
+    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/covers/${settings.cover_image_path}`
+    : undefined;
+
+  // Fallback: if DB path missing, list latest from storage under 'cover/'
+  if (!coverUrl) {
+    const { data: listed } = await supabase.storage
+      .from("covers")
+      .list("cover", { limit: 1, sortBy: { column: "created_at", order: "desc" } });
+    const latest = (listed ?? [])[0];
+    if (latest?.name) {
+      const path = `cover/${latest.name}`;
+      coverUrl = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/covers/${path}`;
+    }
+  }
+
+  // Fetch products with images
+  const { data: products } = await supabase
+    .from("products")
+    .select("id, title, description, price_cents, product_images(path, is_primary)")
+    .eq("is_active", true)
+    .order("created_at", { ascending: false })
+    .limit(20);
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <main className="container-page py-8">
+      {/* Hero / Cover */}
+      <section className="tile mb-10">
+        {coverUrl ? (
+          <div className="w-full">
+            <LoadingImage 
+              src={coverUrl} 
+              alt="Homepage cover" 
+              className="w-full h-auto object-contain" 
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+        ) : (
+          <div className="w-full aspect-[3/2] grid place-items-center text-sm text-gray-500">
+            <div className="text-center">
+              <div className="text-4xl mb-2">📸</div>
+              <div>Upload a cover in Admin → Settings</div>
+            </div>
+          </div>
+        )}
+        <div className="p-6 md:p-10 grid md:grid-cols-2 gap-6 items-center">
+          <div className="text-center md:text-left">
+            <h1 className="font-display text-4xl md:text-6xl tracking-wide text-[#B88972]">NubiadenimbyAG</h1>
+            <p className="mt-3 text-lg md:text-xl">Luxury craftsmanship for women who own their elegance.</p>
+            <Link href="/products" className="btn-primary inline-block mt-6">SHOP NOW</Link>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </section>
+
+      {/* Product Grid */}
+      <section className="mb-16">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Latest Products</h2>
+          <Link href="/products" className="underline text-sm">View all</Link>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {(products ?? []).map((p: any) => {
+            const primary = (p.product_images ?? []).find((i: any) => i.is_primary) || (p.product_images ?? [])[0];
+            const imagePath = primary?.path as string | undefined;
+            const imageUrl = imagePath
+              ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${imagePath}`
+              : undefined;
+            return (
+              <Link key={p.id} href={`/products/${p.id}`} className="tile hover:shadow transition-all duration-300 hover:scale-105">
+                <div className="aspect-square bg-white rounded-lg overflow-hidden">
+                  {imageUrl ? (
+                    <LoadingImage 
+                      src={imageUrl} 
+                      alt={p.title} 
+                      className="w-full h-full" 
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <div className="text-center">
+                        <div className="text-2xl mb-1 jean-emoji-bounce">👖</div>
+                        <div className="text-xs">No image</div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <div className="p-3">
+                  <div className="font-medium line-clamp-1">{p.title}</div>
+                  <div className="text-sm text-gray-600">{formatNAD(p.price_cents)}</div>
+                  {p.description ? (
+                    <p className="text-xs text-gray-500 mt-1 line-clamp-2">{p.description}</p>
+                  ) : null}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      </section>
+    </main>
   );
 }

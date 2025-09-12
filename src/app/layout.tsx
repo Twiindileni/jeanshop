@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/auth-provider";
+import { AuthNav } from "@/components/auth-nav";
+import { LoadingProvider } from "@/components/loading-context";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,11 +27,23 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <LoadingProvider>
+          <AuthProvider>
+            <div className="container-page py-6 flex justify-between items-center">
+              <nav className="flex items-center gap-8 text-sm">
+                <a href="/" className="hover:opacity-70">HOME</a>
+                <a href="/products" className="hover:opacity-70">SHOP</a>
+                <a href="#" className="hover:opacity-70">ABOUT US</a>
+                <a href="#" className="hover:opacity-70">CONTACT</a>
+              </nav>
+              <AuthNav />
+            </div>
+            {children}
+          </AuthProvider>
+        </LoadingProvider>
       </body>
     </html>
   );
 }
+
