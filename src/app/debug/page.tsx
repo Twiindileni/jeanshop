@@ -29,6 +29,7 @@ export default async function DebugPage() {
         <h2 className="text-lg font-semibold mb-2">Environment Variables:</h2>
         <p>SUPABASE_URL: {supabaseUrl || "NOT SET"}</p>
         <p>SUPABASE_KEY: {supabaseKey ? "SET" : "NOT SET"}</p>
+        <p>SITE_URL: {process.env.NEXT_PUBLIC_SITE_URL || "NOT SET"}</p>
       </div>
       
       <div className="mb-6">
@@ -45,9 +46,25 @@ export default async function DebugPage() {
                 console.error("Cover image error:", e);
                 e.currentTarget.style.display = 'none';
               }}
+              onLoad={() => console.log("Cover image loaded successfully")}
             />
           </div>
         )}
+      </div>
+      
+      <div className="mb-6">
+        <h2 className="text-lg font-semibold mb-2">Direct Storage Test:</h2>
+        <p>Testing direct access to storage bucket...</p>
+        <img 
+          src={`${supabaseUrl}/storage/v1/object/public/covers/cover/`}
+          alt="Storage test"
+          className="w-32 h-16 object-cover border"
+          onError={(e) => {
+            console.error("Direct storage access error:", e);
+            e.currentTarget.style.display = 'none';
+          }}
+          onLoad={() => console.log("Direct storage access successful")}
+        />
       </div>
       
       <div className="mb-6">
