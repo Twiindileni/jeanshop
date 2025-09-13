@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { AuthNav } from "@/components/auth-nav";
 import { LoadingProvider } from "@/components/loading-context";
+import { MobileNav } from "@/components/mobile-nav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,15 +31,34 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <LoadingProvider>
           <AuthProvider>
-            <div className="container-page py-6 flex justify-between items-center">
-              <nav className="flex items-center gap-8 text-sm">
-                <a href="/" className="hover:opacity-70">HOME</a>
-                <a href="/products" className="hover:opacity-70">SHOP</a>
-                <a href="/about" className="hover:opacity-70">ABOUT US</a>
-                <a href="/contact" className="hover:opacity-70">CONTACT</a>
-              </nav>
-              <AuthNav />
-            </div>
+            <header className="bg-white shadow-sm sticky top-0 z-50">
+              <div className="container-page py-4">
+                <div className="flex justify-between items-center">
+                  {/* Logo */}
+                  <div className="flex items-center">
+                    <a href="/" className="text-2xl font-bold text-[#B88972]">
+                      NubiadenimbyAG
+                    </a>
+                  </div>
+                  
+                  {/* Desktop Navigation */}
+                  <nav className="hidden md:flex items-center gap-8 text-sm">
+                    <a href="/" className="hover:opacity-70 transition-opacity">HOME</a>
+                    <a href="/products" className="hover:opacity-70 transition-opacity">SHOP</a>
+                    <a href="/about" className="hover:opacity-70 transition-opacity">ABOUT US</a>
+                    <a href="/contact" className="hover:opacity-70 transition-opacity">CONTACT</a>
+                  </nav>
+                  
+                  {/* Desktop Auth */}
+                  <div className="hidden md:block">
+                    <AuthNav />
+                  </div>
+                  
+                  {/* Mobile Menu Button */}
+                  <MobileNav />
+                </div>
+              </div>
+            </header>
             {children}
           </AuthProvider>
         </LoadingProvider>

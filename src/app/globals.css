@@ -84,3 +84,26 @@ body {
 .jean-emoji-bounce {
   animation: jean-emoji-bounce 2s ease-in-out infinite;
 }
+
+/* Mobile Navigation Styles */
+@media (max-width: 768px) {
+  .container-page {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Ensure mobile menu is above everything */
+  .mobile-menu-overlay {
+    z-index: 9999;
+  }
+  
+  /* Smooth transitions for mobile menu */
+  .mobile-menu-panel {
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .mobile-menu-panel.closing {
+    transform: translateX(100%);
+  }
+}
