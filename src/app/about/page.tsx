@@ -1,5 +1,6 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { LoadingImage } from "@/components/loading-image";
+import Link from "next/link";
 
 export default async function AboutPage() {
   const supabase = await getSupabaseServerClient();
@@ -54,8 +55,8 @@ export default async function AboutPage() {
                   and fashion-forward design.
                 </p>
                 <p>
-                  We believe that great jeans are more than just clothing – they're a statement of 
-                  personal style and confidence. That's why we carefully curate our collection to 
+                  We believe that great jeans are more than just clothing – they&apos;re a statement of 
+                  personal style and confidence. That&apos;s why we carefully curate our collection to 
                   ensure every pair meets our high standards for quality and craftsmanship.
                 </p>
                 <p>
@@ -99,7 +100,7 @@ export default async function AboutPage() {
               <div className="text-5xl mb-4">🤝</div>
               <h3 className="text-2xl font-semibold text-[#B88972] mb-4">Customer Service</h3>
               <p className="text-gray-600">
-                Your satisfaction is our priority. We're here to help you find the perfect 
+                Your satisfaction is our priority. We&apos;re here to help you find the perfect 
                 jeans and provide exceptional service every step of the way.
               </p>
             </div>
@@ -108,7 +109,7 @@ export default async function AboutPage() {
               <div className="text-5xl mb-4">🌱</div>
               <h3 className="text-2xl font-semibold text-[#B88972] mb-4">Sustainability</h3>
               <p className="text-gray-600">
-                We're committed to sustainable fashion practices and work with brands that 
+                We&apos;re committed to sustainable fashion practices and work with brands that 
                 share our values for environmental responsibility.
               </p>
             </div>
@@ -204,18 +205,18 @@ export default async function AboutPage() {
             Browse our collection and discover the perfect fit for your style
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
+            <Link
               href="/products"
               className="bg-white text-[#B88972] px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
             >
               Shop Now
-            </a>
-            <a
+            </Link>
+            <Link
               href="/contact"
               className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#B88972] transition-colors"
             >
               Contact Us
-            </a>
+            </Link>
           </div>
         </div>
       </section>
