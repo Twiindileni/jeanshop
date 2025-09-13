@@ -1,6 +1,7 @@
 import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatNAD } from "@/lib/currency";
 import { PaymentButton } from "@/components/payment-button";
+import { ProductImageGallery } from "@/components/product-image-gallery";
 
 export default async function ProductDetail({ params }: { params: { id: string } }) {
   const supabase = await getSupabaseServerClient();
@@ -55,20 +56,13 @@ export default async function ProductDetail({ params }: { params: { id: string }
   const variants = (product?.product_variants ?? []) as Array<{ id: string; stock: number; sizes: { label: string } }>;
 
   return (
-    <div className="container-page py-8 grid grid-cols-1 lg:grid-cols-[100px_1fr_420px] gap-6">
-      {/* Thumbnails */}
-      <div className="hidden lg:grid gap-3 content-start">
-        {thumbnails.map((img, idx) => (
-          <div key={idx} className="aspect-square border rounded overflow-hidden bg-white grid place-items-center">
-            <img src={`${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${img.path}`} alt="thumb" className="max-w-full max-h-full object-contain" />
-          </div>
-        ))}
-      </div>
-
-      {/* Main image */}
-      <div className="tile grid place-items-center aspect-[3/4] lg:aspect-auto">
-        {mainUrl ? <img src={mainUrl} alt={product?.title} className="max-w-full max-h-full object-contain" /> : null}
-      </div>
+    <div className="container-page py-8 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8">
+      {/* Image Gallery */}
+      <ProductImageGallery
+        images={images}
+        productTitle={product?.title || "Product"}
+        supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL || ""}
+      />
 
       {/* Right panel */}
       <div className="grid gap-4 content-start">
