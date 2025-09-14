@@ -3,20 +3,36 @@ import { formatNAD } from "@/lib/currency";
 import { PaymentButton } from "@/components/payment-button";
 import { ProductImageGallery } from "@/components/product-image-gallery";
 
-export default async function ProductDetail({ params }: { params: { id: string } }) {
+export default async function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const supabase = await getSupabaseServerClient();
   const { data: product } = await supabase
     .from("products")
     .select("id, title, description, price_cents, color, product_images(path, is_primary), product_variants(id, stock, sizes(label))")
-    .eq("id", params.id)
+    .eq("id", id)
     .single();
 
   const images = (product?.product_images ?? []) as Array<{ path: string; is_primary: boolean }>;
-  const thumbnails = images;
-  const main = images.find((i) => i.is_primary) || images[0];
-  const mainUrl = main?.path
-    ? `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/product-images/${main.path}`
-    : undefined;
+  
+  // Debug logging
+  console.log('Product Debug:', {
+    product: product?.title,
+    images,
+    supabaseUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+    hasImages: images.length > 0
+  });
+
+  // If no product found
+  if (!product) {
+    return (
+      <div className="container-page py-8">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-4">Product Not Found</h1>
+          <p className="text-gray-600">The product you're looking for doesn't exist.</p>
+        </div>
+      </div>
+    );
+  }
 
   async function addToCart(formData: FormData) {
     "use server";
@@ -58,11 +74,21 @@ export default async function ProductDetail({ params }: { params: { id: string }
   return (
     <div className="container-page py-8 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8">
       {/* Image Gallery */}
-      <ProductImageGallery
-        images={images}
-        productTitle={product?.title || "Product"}
-        supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL || ""}
-      />
+      {images.length > 0 ? (
+        <ProductImageGallery
+          images={images}
+          productTitle={product?.title || "Product"}
+          supabaseUrl={process.env.NEXT_PUBLIC_SUPABASE_URL || ""}
+        />
+      ) : (
+        <div className="w-full aspect-[3/4] lg:aspect-auto bg-gray-100 rounded-lg flex items-center justify-center">
+          <div className="text-center text-gray-500">
+            <div className="text-6xl mb-4">👖</div>
+            <div className="text-lg">No images available</div>
+            <div className="text-sm">Upload images in Admin → Products</div>
+          </div>
+        </div>
+      )}
 
       {/* Right panel */}
       <div className="grid gap-4 content-start">
@@ -108,7 +134,7 @@ export default async function ProductDetail({ params }: { params: { id: string }
           <div className="grid grid-cols-1 gap-3">
             {/* Order Button - Primary Action */}
             <a 
-              href={`/order/${product?.id}`} 
+              href={`/order/${id}`} 
               className="bg-gradient-to-r from-[#B88972] to-[#A67B5B] text-white rounded-lg px-6 py-4 text-center font-semibold text-lg hover:from-[#A67B5B] hover:to-[#B88972] transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center justify-center gap-2"
             >
               <span>🛍️</span>

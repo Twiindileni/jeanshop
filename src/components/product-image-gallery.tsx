@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { LoadingImage } from "./loading-image";
 import { ImageModal } from "./image-modal";
+import { SimpleImage } from "./simple-image";
 
 interface ProductImageGalleryProps {
   images: Array<{ path: string; is_primary: boolean }>;
@@ -33,8 +34,23 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
     imageUrls,
     mainImage,
     selectedIndex,
-    supabaseUrl
+    supabaseUrl,
+    hasImages: images.length > 0,
+    firstImagePath: images[0]?.path,
+    constructedUrl: images[0] ? `${supabaseUrl}/storage/v1/object/public/product-images/${images[0].path}` : 'No first image'
   });
+
+  // Don't render if no images
+  if (images.length === 0) {
+    return (
+      <div className="w-full aspect-[3/4] lg:aspect-auto bg-gray-100 rounded-lg flex items-center justify-center">
+        <div className="text-center text-gray-500">
+          <div className="text-6xl mb-4">👖</div>
+          <div className="text-lg">No images available</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -51,10 +67,12 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
                   : 'border-gray-200 hover:border-gray-300'
               }`}
             >
-              <LoadingImage
+              <img
                 src={url}
                 alt={`${productTitle} - Thumbnail ${idx + 1}`}
                 className="max-w-full max-h-full object-cover"
+                onLoad={() => console.log("Thumbnail loaded:", url)}
+                onError={(e) => console.error("Thumbnail failed to load:", url, e)}
               />
             </button>
           ))}
@@ -62,34 +80,23 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
 
         {/* Main Image */}
         <div className="relative">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="w-full aspect-[3/4] lg:aspect-auto bg-white rounded-lg overflow-hidden border hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group"
-          >
-            <div className="w-full h-full flex items-center justify-center bg-gray-50">
-              {mainImage ? (
-                <LoadingImage
-                  src={mainImage}
-                  alt={productTitle}
-                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
-                />
-              ) : (
+          <div className="w-full aspect-[3/4] lg:aspect-auto">
+            {mainImage ? (
+              <SimpleImage
+                src={mainImage}
+                alt={productTitle}
+                onClick={() => setIsModalOpen(true)}
+              />
+            ) : (
+              <div className="w-full h-full flex items-center justify-center bg-gray-50">
                 <div className="text-center text-gray-400">
                   <div className="text-4xl mb-2">👖</div>
                   <div className="text-sm">No image available</div>
+                  <div className="text-xs mt-1 text-gray-300">Debug: {supabaseUrl ? 'URL set' : 'URL missing'}</div>
                 </div>
-              )}
-            </div>
-            
-            {/* Zoom Icon Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300 flex items-center justify-center">
-              <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-white bg-opacity-90 rounded-full p-3">
-                <svg className="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
-                </svg>
               </div>
-            </div>
-          </button>
+            )}
+          </div>
 
           {/* Mobile Thumbnails */}
           {imageUrls.length > 1 && (
@@ -104,10 +111,12 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
-                  <LoadingImage
+                  <img
                     src={url}
                     alt={`Thumbnail ${idx + 1}`}
                     className="w-full h-full object-cover"
+                    onLoad={() => console.log("Mobile thumbnail loaded:", url)}
+                    onError={(e) => console.error("Mobile thumbnail failed to load:", url, e)}
                   />
                 </button>
               ))}
