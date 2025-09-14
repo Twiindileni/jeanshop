@@ -27,6 +27,15 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
 
   const mainImage = imageUrls[selectedIndex] || imageUrls[0];
 
+  // Debug logging
+  console.log('Product Image Gallery Debug:', {
+    images: sortedImages,
+    imageUrls,
+    mainImage,
+    selectedIndex,
+    supabaseUrl
+  });
+
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-[100px_1fr] gap-4">
@@ -57,12 +66,12 @@ export function ProductImageGallery({ images, productTitle, supabaseUrl }: Produ
             onClick={() => setIsModalOpen(true)}
             className="w-full aspect-[3/4] lg:aspect-auto bg-white rounded-lg overflow-hidden border hover:shadow-lg transition-all duration-300 hover:scale-[1.02] group"
           >
-            <div className="w-full h-full flex items-center justify-center">
+            <div className="w-full h-full flex items-center justify-center bg-gray-50">
               {mainImage ? (
                 <LoadingImage
                   src={mainImage}
                   alt={productTitle}
-                  className="max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
                 />
               ) : (
                 <div className="text-center text-gray-400">

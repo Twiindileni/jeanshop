@@ -81,7 +81,7 @@ export function LoadingImage({
           alt={alt}
           onLoad={handleLoad}
           onError={handleError}
-          className="w-full h-full object-cover transition-opacity duration-300"
+          className={`w-full h-full transition-opacity duration-300 ${className.includes('object-') ? '' : 'object-cover'}`}
           style={{
             opacity: isMounted && isLoading ? 0 : 1
           }}
