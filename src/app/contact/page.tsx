@@ -1,35 +1,74 @@
-"use client";
+import { getSupabaseServerClient } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
+import ContactForm from "@/components/contact-form";
+import ContactMessageDisplay from "@/components/contact-message-display";
 
-import { useState } from "react";
-import { ButtonLoader } from "@/components/fashion-loader";
+// Server action to submit contact form
+async function submitContactMessage(formData: FormData) {
+  "use server";
+  
+  const name = formData.get('name') as string;
+  const lastName = formData.get('lastName') as string;
+  const email = formData.get('email') as string;
+  const subject = formData.get('subject') as string;
+  const message = formData.get('message') as string;
 
-export default function ContactPage() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  if (!name || !email || !subject || !message) {
+    redirect('/contact?error=missing_fields');
+  }
 
-  const handleSubmit = async (formData: FormData) => {
-    setIsSubmitting(true);
-    setMessage(null);
+  try {
+    const supabase = await getSupabaseServerClient();
     
-    try {
-      // Simulate form submission
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      // In a real app, you would send this to your backend
-      const name = formData.get('name') as string;
-      const email = formData.get('email') as string;
-      const subject = formData.get('subject') as string;
-      const message = formData.get('message') as string;
-      
-      console.log('Contact form submission:', { name, email, subject, message });
-      
-      setMessage({ type: 'success', text: 'Thank you for your message! We\'ll get back to you soon.' });
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Sorry, there was an error sending your message. Please try again.' });
-    } finally {
-      setIsSubmitting(false);
+    // Log the data being inserted for debugging
+    const insertData = {
+      name: name.trim(),
+      last_name: lastName?.trim() || null,
+      email: email.trim(),
+      subject: subject.trim(),
+      message: message.trim(),
+    };
+    
+    console.log('Inserting contact message:', insertData);
+    
+    const { error } = await supabase
+      .from('contact_messages')
+      .insert(insertData);
+
+    if (error) {
+      console.error('Contact form submission error:', error);
+      redirect('/contact?error=submission_failed');
+      return;
     }
-  };
+
+    console.log('Contact message submitted successfully');
+    redirect('/contact?success=1');
+  } catch (error) {
+    console.error('Contact form error:', error);
+    redirect('/contact?error=unexpected');
+  }
+}
+
+export default async function ContactPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ success?: string; error?: string; }>;
+}) {
+  const params = await searchParams;
+  const success = params.success === '1';
+  const error = params.error;
+
+  let message: { type: 'success' | 'error'; text: string } | null = null;
+  
+  if (success) {
+    message = { type: 'success', text: 'Thank you for your message! We\'ll get back to you soon.' };
+  } else if (error === 'missing_fields') {
+    message = { type: 'error', text: 'Please fill in all required fields.' };
+  } else if (error === 'submission_failed') {
+    message = { type: 'error', text: 'Failed to submit your message. Please try again.' };
+  } else if (error === 'unexpected') {
+    message = { type: 'error', text: 'An unexpected error occurred. Please try again later.' };
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -128,107 +167,9 @@ export default function ContactPage() {
             <div className="bg-white rounded-lg shadow-lg p-8">
               <h2 className="text-2xl font-bold text-[#B88972] mb-6">Send us a Message</h2>
               
-              {message && (
-                <div className={`mb-6 p-4 rounded-lg ${
-                  message.type === 'success' 
-                    ? 'bg-green-100 border border-green-300 text-green-700' 
-                    : 'bg-red-100 border border-red-300 text-red-700'
-                }`}>
-                  {message.text}
-                </div>
-              )}
+              <ContactMessageDisplay message={message} />
 
-              <form action={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="name"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
-                      placeholder="Your first name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last Name *
-                    </label>
-                    <input
-                      type="text"
-                      name="lastName"
-                      required
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
-                      placeholder="Your last name"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Email Address *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
-                    placeholder="your.email@example.com"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Subject *
-                  </label>
-                  <select
-                    name="subject"
-                    required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
-                  >
-                    <option value="">Select a subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="product">Product Question</option>
-                    <option value="sizing">Sizing Help</option>
-                    <option value="order">Order Support</option>
-                    <option value="return">Returns & Exchanges</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Message *
-                  </label>
-                  <textarea
-                    name="message"
-                    required
-                    rows={5}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
-                    placeholder="Tell us how we can help you..."
-                  />
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-gradient-to-r from-[#B88972] to-[#A67B5B] text-white rounded-lg px-6 py-4 font-semibold text-lg hover:from-[#A67B5B] hover:to-[#B88972] transition-all duration-300 transform hover:scale-105 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
-                >
-                  {isSubmitting ? (
-                    <>
-                      <ButtonLoader />
-                      <span>Sending Message...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>📧</span>
-                      <span>Send Message</span>
-                    </>
-                  )}
-                </button>
-              </form>
+              <ContactForm onSubmit={submitContactMessage} />
             </div>
           </div>
         </div>

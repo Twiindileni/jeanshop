@@ -4,13 +4,15 @@ import { formatNAD } from "@/lib/currency";
 export default async function AdminOverview() {
   const supabase = await getSupabaseServerClient();
 
-  const [productsCountRes, inactiveProductsRes, ordersCountRes, pendingOrdersRes, usersCountRes, totalsRes] = await Promise.all([
+  const [productsCountRes, inactiveProductsRes, ordersCountRes, pendingOrdersRes, usersCountRes, totalsRes, contactMessagesRes, unreadContactRes] = await Promise.all([
     supabase.from("products").select("id", { count: "exact", head: true }),
     supabase.from("products").select("id", { count: "exact", head: true }).eq("is_active", false),
     supabase.from("orders").select("id", { count: "exact", head: true }),
     supabase.from("orders").select("id", { count: "exact", head: true }).eq("status", "pending"),
     supabase.from("profiles").select("id", { count: "exact", head: true }),
     supabase.from("orders").select("total_cents").in("status", ["paid","shipped","delivered"]),
+    supabase.from("contact_messages").select("id", { count: "exact", head: true }),
+    supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("is_read", false),
   ]);
 
   const totalUsers = usersCountRes.count ?? 0;
@@ -19,6 +21,8 @@ export default async function AdminOverview() {
   const totalOrders = ordersCountRes.count ?? 0;
   const pendingOrders = pendingOrdersRes.count ?? 0;
   const totalOrderValueCents = (totalsRes.data ?? []).reduce((s: number, o: any) => s + (o.total_cents ?? 0), 0);
+  const totalContactMessages = contactMessagesRes.count ?? 0;
+  const unreadContactMessages = unreadContactRes.count ?? 0;
 
   return (
     <div className="grid gap-6">
@@ -31,6 +35,8 @@ export default async function AdminOverview() {
         <Card title="Total Orders" value={totalOrders} />
         <Card title="Pending Orders" value={pendingOrders} />
         <Card title="Pending Products" value={pendingProducts} />
+        <Card title="Contact Messages" value={totalContactMessages} />
+        <Card title="Unread Messages" value={unreadContactMessages} />
         <Card title="Total Order Value" value={formatNAD(totalOrderValueCents)} />
       </div>
 
@@ -39,6 +45,7 @@ export default async function AdminOverview() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <QuickAction href="/admin/products" label="Manage Products" />
           <QuickAction href="/admin/orders" label="Manage Orders" />
+          <QuickAction href="/admin/contact" label="Contact Messages" />
           <QuickAction href="/admin/categories" label="Manage Categories" />
           <QuickAction href="/admin/sizes" label="Manage Sizes" />
           <QuickAction href="/admin/settings" label="Site Settings" />
