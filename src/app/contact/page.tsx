@@ -7,20 +7,42 @@ import ContactMessageDisplay from "@/components/contact-message-display";
 async function submitContactMessage(formData: FormData) {
   "use server";
   
+  console.log('=== CONTACT FORM SUBMISSION START ===');
+  
   const name = formData.get('name') as string;
   const lastName = formData.get('lastName') as string;
   const email = formData.get('email') as string;
   const subject = formData.get('subject') as string;
   const message = formData.get('message') as string;
 
+  console.log('Form data received:', { name, lastName, email, subject, message: message?.substring(0, 50) + '...' });
+
   if (!name || !email || !subject || !message) {
+    console.log('Missing required fields');
     redirect('/contact?error=missing_fields');
+    return;
   }
 
   try {
+    console.log('Getting Supabase client...');
     const supabase = await getSupabaseServerClient();
     
-    // Log the data being inserted for debugging
+    // Test connection first
+    console.log('Testing Supabase connection...');
+    const { data: testData, error: testError } = await supabase
+      .from('contact_messages')
+      .select('count')
+      .limit(1);
+    
+    if (testError) {
+      console.error('Supabase connection test failed:', testError);
+      redirect('/contact?error=connection_failed');
+      return;
+    }
+    
+    console.log('Supabase connection successful');
+    
+    // Prepare data for insertion
     const insertData = {
       name: name.trim(),
       last_name: lastName?.trim() || null,
@@ -31,32 +53,38 @@ async function submitContactMessage(formData: FormData) {
     
     console.log('Inserting contact message:', insertData);
     
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('contact_messages')
-      .insert(insertData);
+      .insert(insertData)
+      .select();
 
     if (error) {
       console.error('Contact form submission error:', error);
-      redirect('/contact?error=submission_failed');
+      redirect('/contact?error=submission_failed&details=' + encodeURIComponent(error.message));
       return;
     }
 
-    console.log('Contact message submitted successfully');
-    redirect('/contact?success=1');
+    console.log('Contact message submitted successfully:', data);
+    console.log('=== CONTACT FORM SUBMISSION SUCCESS ===');
   } catch (error) {
-    console.error('Contact form error:', error);
-    redirect('/contact?error=unexpected');
+    console.error('Contact form unexpected error:', error);
+    redirect('/contact?error=unexpected&details=' + encodeURIComponent(String(error)));
+    return;
   }
+  
+  // Success redirect outside try-catch to avoid catching redirect errors
+  redirect('/contact?success=1');
 }
 
 export default async function ContactPage({
   searchParams,
 }: {
-  searchParams: Promise<{ success?: string; error?: string; }>;
+  searchParams: Promise<{ success?: string; error?: string; details?: string; }>;
 }) {
   const params = await searchParams;
   const success = params.success === '1';
   const error = params.error;
+  const details = params.details;
 
   let message: { type: 'success' | 'error'; text: string } | null = null;
   
@@ -65,9 +93,11 @@ export default async function ContactPage({
   } else if (error === 'missing_fields') {
     message = { type: 'error', text: 'Please fill in all required fields.' };
   } else if (error === 'submission_failed') {
-    message = { type: 'error', text: 'Failed to submit your message. Please try again.' };
+    message = { type: 'error', text: `Failed to submit your message: ${details || 'Unknown error'}` };
+  } else if (error === 'connection_failed') {
+    message = { type: 'error', text: 'Database connection failed. Please try again later.' };
   } else if (error === 'unexpected') {
-    message = { type: 'error', text: 'An unexpected error occurred. Please try again later.' };
+    message = { type: 'error', text: `An unexpected error occurred: ${details || 'Unknown error'}` };
   }
 
   return (
