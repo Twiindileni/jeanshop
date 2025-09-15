@@ -19,6 +19,14 @@ create policy "Public profiles are viewable by owner"
 on public.profiles for select
 using ( auth.uid() = id );
 
+create policy "Admin can view all profiles"
+on public.profiles for select
+using ( public.is_admin(auth.uid()) );
+
+create policy "Admin can manage all profiles"
+on public.profiles for all
+using ( public.is_admin(auth.uid()) ) with check ( public.is_admin(auth.uid()) );
+
 create policy "Users can insert their own profile"
 on public.profiles for insert
 with check ( auth.uid() = id );

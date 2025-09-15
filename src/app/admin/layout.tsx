@@ -23,9 +23,10 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <a className="hover:opacity-70" href="/admin">Overview</a>
           <a className="hover:opacity-70" href="/admin/users">Users</a>
           <a className="hover:opacity-70" href="/admin/products">Products</a>
+          <a className="hover:opacity-70" href="/admin/orders">Orders</a>
+          <a className="hover:opacity-70" href="/admin/contact">Contact Messages</a>
           <a className="hover:opacity-70" href="/admin/categories">Categories</a>
           <a className="hover:opacity-70" href="/admin/sizes">Sizes</a>
-          <a className="hover:opacity-70" href="/admin/orders">Orders</a>
           <a className="hover:opacity-70" href="/admin/analytics">Analytics</a>
           <a className="hover:opacity-70" href="/admin/settings">Settings</a>
         </nav>
