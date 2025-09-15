@@ -20,11 +20,11 @@ export default async function AdminUsersPage() {
     await supabase.from("profiles").update({ wallet_cents: Math.round(amount * 100) }).eq("id", id);
   }
 
-  const { data: users } = await supabase
+  // Query all users for admin view
+  const { data: users, error: usersError } = await supabase
     .from("profiles")
-    .select("id, email, username, name, is_admin, wallet_cents, created_at")
-    .order("created_at", { ascending: false })
-    .limit(100);
+    .select("id, email, username, is_admin, wallet_cents, created_at")
+    .order("created_at", { ascending: false });
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -48,6 +48,14 @@ export default async function AdminUsersPage() {
         </div>
       </div>
 
+      {usersError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+          <div className="text-red-800">
+            <strong>Error loading users:</strong> {usersError.message}
+          </div>
+        </div>
+      )}
+
       <div className="bg-white rounded-lg border shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -62,7 +70,7 @@ export default async function AdminUsersPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {users?.length === 0 ? (
+              {!users || users?.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
                     <div className="flex flex-col items-center gap-2">
@@ -78,11 +86,9 @@ export default async function AdminUsersPage() {
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <div className="font-medium text-gray-900">
-                          {u.name || u.username || 'Unnamed User'}
+                          {u.username || 'Unnamed User'}
                         </div>
-                        {u.username && u.name !== u.username && (
-                          <div className="text-sm text-gray-500">@{u.username}</div>
-                        )}
+                        <div className="text-sm text-gray-500">ID: {u.id.substring(0, 8)}...</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">

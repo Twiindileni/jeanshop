@@ -2,16 +2,18 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import { formatNAD } from "@/lib/currency";
 
-export default async function AdminUserDetail({ params }: { params: { id: string } }) {
-  const supabase = getSupabaseServerClient();
+export default async function AdminUserDetail({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
+  const supabase = await getSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { data: profile } = await supabase.from("profiles").select("is_admin").eq("id", user.id).single();
   if (!profile?.is_admin) redirect("/");
 
   const [{ data: u }, { data: orders }] = await Promise.all([
-    supabase.from("profiles").select("id, email, username, wallet_cents").eq("id", params.id).single(),
-    supabase.from("orders").select("id, status, total_cents, created_at").eq("user_id", params.id).order("created_at", { ascending: false }),
+    supabase.from("profiles").select("id, email, username, wallet_cents").eq("id", id).single(),
+    supabase.from("orders").select("id, status, total_cents, created_at").eq("user_id", id).order("created_at", { ascending: false }),
   ]);
 
   return (
