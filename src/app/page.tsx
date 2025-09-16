@@ -59,7 +59,7 @@ export default async function Home() {
         )}
         <div className="p-6 md:p-10 grid md:grid-cols-2 gap-6 items-center">
           <div className="text-center md:text-left">
-            <h1 className="font-display text-4xl md:text-6xl tracking-wide text-[#B88972]">NubiadenimbyAG</h1>
+            <h1 className="font-display text-4xl md:text-6xl tracking-wide text-[#B88972]">Nubiadenim by AG</h1>
             <p className="mt-3 text-lg md:text-xl">Luxury craftsmanship for women who own their elegance.</p>
             <Link href="/products" className="btn-primary inline-block mt-6">SHOP NOW</Link>
           </div>
