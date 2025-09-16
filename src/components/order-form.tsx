@@ -15,6 +15,7 @@ export function OrderForm({ productId, productTitle, productPrice, onSubmit }: O
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  const [customerEmail, setCustomerEmail] = useState("");
 
   const handleSubmit = async (formData: FormData) => {
     setIsSubmitting(true);
@@ -104,6 +105,8 @@ export function OrderForm({ productId, productTitle, productPrice, onSubmit }: O
                 type="email"
                 name="customerEmail"
                 required
+                value={customerEmail}
+                onChange={(e) => setCustomerEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#B88972] focus:border-transparent"
                 placeholder="Enter your email"
               />
@@ -228,7 +231,20 @@ export function OrderForm({ productId, productTitle, productPrice, onSubmit }: O
           {/* Card Payment Button */}
           <div className="text-center">
             <p className="text-sm text-gray-500 mb-2">or</p>
-            <PaymentButton />
+            <PaymentButton 
+              amount={totalPrice * 100} // Convert to cents
+              currency="NAD"
+              productName={productTitle}
+              orderId={`temp-${Date.now()}-${productId}`} // Temporary order ID
+              customerEmail={customerEmail}
+              onPaymentSuccess={(details) => {
+                console.log('Payment successful:', details);
+                // Handle successful payment
+              }}
+              onPaymentError={(error) => {
+                setError(`Payment failed: ${error}`);
+              }}
+            />
           </div>
         </div>
       </form>

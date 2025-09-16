@@ -134,7 +134,7 @@ export default async function ContactPage({
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Phone</h3>
-                    <p className="text-gray-600">+264 81 67 37 599</p>
+                    <p className="text-gray-600">+264 81 673 7599</p>
                     <p className="text-sm text-gray-500">Mon-Fri: 9AM-6PM, Sat: 10AM-4PM</p>
                   </div>
                 </div>
@@ -157,8 +157,8 @@ export default async function ContactPage({
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">Address</h3>
                     <p className="text-gray-600">
-                      123 Fashion Street<br />
-                      Windhoek, Namibia
+                      No 47, Pasteur Street<br />
+                      Windhoek West, Namibia
                     </p>
                     <p className="text-sm text-gray-500">Visit our showroom</p>
                   </div>
@@ -170,7 +170,7 @@ export default async function ContactPage({
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">WhatsApp</h3>
-                    <p className="text-gray-600">+264 81 67 37 599</p>
+                    <p className="text-gray-600">+264 81 673 7599</p>
                     <p className="text-sm text-gray-500">Quick responses via WhatsApp</p>
                   </div>
                 </div>
@@ -183,7 +183,7 @@ export default async function ContactPage({
                   <a href="#" className="bg-[#B88972] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-[#A67B5B] transition-colors">
                     <span className="text-lg">📘</span>
                   </a>
-                  <a href="#" className="bg-[#B88972] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-[#A67B5B] transition-colors">
+                  <a href="https://www.instagram.com/nubiadenim?igsh=c2M1djgycHUwOThz" target="_blank" rel="noopener noreferrer" className="bg-[#B88972] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-[#A67B5B] transition-colors">
                     <span className="text-lg">📷</span>
                   </a>
                   <a href="#" className="bg-[#B88972] text-white rounded-full w-10 h-10 flex items-center justify-center hover:bg-[#A67B5B] transition-colors">
@@ -262,7 +262,7 @@ export default async function ContactPage({
               <div className="text-center text-gray-500">
                 <div className="text-6xl mb-4">🗺️</div>
                 <p className="text-xl">Interactive Map Coming Soon</p>
-                <p className="text-sm">123 Fashion Street, Windhoek, Namibia</p>
+                <p className="text-sm">No 47, Pasteur Street, Windhoek West, Namibia</p>
               </div>
             </div>
           </div>

@@ -59,9 +59,37 @@ export default async function Home() {
         )}
         <div className="p-6 md:p-10 grid md:grid-cols-2 gap-6 items-center">
           <div className="text-center md:text-left">
-            <h1 className="font-display text-4xl md:text-6xl tracking-wide text-[#B88972]">NubiadenimbyAG</h1>
+            <h1 className="font-display text-4xl md:text-6xl tracking-wide">
+              <span className="text-[#B88972]">Nubiadenim by </span>
+              <span className="text-black">AG</span>
+            </h1>
             <p className="mt-3 text-lg md:text-xl">Luxury craftsmanship for women who own their elegance.</p>
             <Link href="/products" className="btn-primary inline-block mt-6">SHOP NOW</Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Choose Us Section */}
+      <section className="mb-16">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose Nubia Denim?</h2>
+          <p className="text-gray-600 max-w-2xl mx-auto">We're committed to delivering exceptional quality and style that empowers every woman.</p>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center">
+            <div className="text-4xl mb-4">✂️</div>
+            <h3 className="text-xl font-semibold mb-2">Premium Craftsmanship</h3>
+            <p className="text-gray-600">Each pair is meticulously crafted with attention to detail and superior materials.</p>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl mb-4">👩‍💼</div>
+            <h3 className="text-xl font-semibold mb-2">Perfect Fit</h3>
+            <p className="text-gray-600">Designed specifically for women who value both comfort and style in their wardrobe.</p>
+          </div>
+          <div className="text-center">
+            <div className="text-4xl mb-4">🇳🇦</div>
+            <h3 className="text-xl font-semibold mb-2">Local Excellence</h3>
+            <p className="text-gray-600">Proudly serving Namibian women with world-class denim and exceptional service.</p>
           </div>
         </div>
       </section>
@@ -107,6 +135,25 @@ export default async function Home() {
               </Link>
             );
           })}
+        </div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="bg-[#B88972]/10 rounded-lg p-8 mb-16">
+        <div className="max-w-md mx-auto text-center">
+          <h3 className="text-2xl font-bold text-gray-900 mb-2">Stay in Style</h3>
+          <p className="text-gray-600 mb-6">Get the latest updates on new arrivals, exclusive offers, and styling tips.</p>
+          <div className="flex gap-2">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B88972]"
+            />
+            <button className="bg-[#B88972] text-white px-6 py-2 rounded-lg font-medium hover:bg-[#A67B5B] transition-colors">
+              Subscribe
+            </button>
+          </div>
+          <p className="text-xs text-gray-500 mt-2">We respect your privacy. Unsubscribe at any time.</p>
         </div>
       </section>
     </main>

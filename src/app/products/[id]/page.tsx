@@ -2,6 +2,7 @@ import { getSupabaseServerClient } from "@/lib/supabase/server";
 import { formatNAD } from "@/lib/currency";
 import { PaymentButton } from "@/components/payment-button";
 import { ProductImageGallery } from "@/components/product-image-gallery";
+import { SizeGuide } from "@/components/size-guide";
 
 export default async function ProductDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -111,7 +112,10 @@ export default async function ProductDetail({ params }: { params: Promise<{ id: 
                 </label>
               ))}
             </div>
-            <div className="text-xs text-gray-500 mt-1">Only sizes with stock are selectable.</div>
+            <div className="text-xs text-gray-500 mt-1">
+              Only sizes with stock are selectable. 
+              <SizeGuide />
+            </div>
           </div>
           <div className="grid grid-cols-[120px_auto] gap-3 items-end">
             <div>

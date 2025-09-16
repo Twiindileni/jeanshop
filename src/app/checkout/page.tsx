@@ -103,12 +103,12 @@ export default async function CheckoutPage() {
             Pay with wallet
           </button>
         </form>
-        <form action="/api/stripe/checkout" method="post" onSubmit={() => {}}>
-          <input type="hidden" name="mode" value="payment" />
-          <button formAction="/api/stripe/checkout" className="bg-foreground text-background rounded px-5 py-2.5 text-sm hover:opacity-90">
-            Pay with Card
+        <div className="bg-gray-100 border border-gray-300 rounded-lg p-4">
+          <p className="text-gray-600 text-sm mb-2">🚧 Card payments are under construction</p>
+          <button disabled className="bg-gray-400 text-white rounded px-5 py-2.5 text-sm cursor-not-allowed opacity-60">
+            Pay with Card (Coming Soon)
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

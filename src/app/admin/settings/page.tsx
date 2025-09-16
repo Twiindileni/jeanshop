@@ -44,7 +44,7 @@ export default async function AdminSettingsPage({ searchParams }: { searchParams
         <div className="grid gap-2 text-sm">
           <div className="flex justify-between">
             <span className="text-gray-600">Site Name:</span>
-            <span>NubiadenimbyAG</span>
+            <span>Nubiadenim by AG</span>
           </div>
           <div className="flex justify-between">
             <span className="text-gray-600">Current Cover:</span>
