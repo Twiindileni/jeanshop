@@ -25,13 +25,18 @@ export default function PaymentMethods({
     return (cents / 100).toFixed(2);
   };
 
+  const handleStripePayment = () => {
+    // Redirect to Stripe checkout
+    window.open('https://buy.stripe.com/test_3cIeVe0lB27r55JdZqbfO00', '_blank');
+  };
+
   return (
     <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
-      {/* Under Construction Header */}
+      {/* Payment Header */}
       <div className="text-center mb-8">
-        <div className="text-6xl mb-4">🚧</div>
-        <h2 className="text-3xl font-bold text-gray-900 mb-2">Payment System</h2>
-        <h3 className="text-xl text-[#B88972] font-semibold mb-4">Under Construction</h3>
+        <div className="text-6xl mb-4">💳</div>
+        <h2 className="text-3xl font-bold text-gray-900 mb-2">Choose Payment Method</h2>
+        <h3 className="text-lg text-[#B88972] mb-4">Secure & Fast Checkout</h3>
       </div>
 
       {/* Order Summary */}
@@ -55,43 +60,49 @@ export default function PaymentMethods({
         </div>
       </div>
 
-      {/* Construction Message */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-6">
-        <div className="flex items-start space-x-3">
-          <div className="text-blue-500 text-2xl">💳</div>
-          <div className="flex-1">
-            <h4 className="text-blue-900 font-semibold mb-2">Payment Processing Coming Soon!</h4>
-            <p className="text-blue-800 text-sm mb-3">
-              We're setting up secure payment processing to accept:
-            </p>
-            
-            <div className="grid grid-cols-2 gap-3 text-sm text-blue-700 mb-4">
-              <div className="flex items-center space-x-2">
-                <span>💳</span>
-                <span>Credit/Debit Cards</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span>📱</span>
-                <span>Mobile Money (MoMo)</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span>🏦</span>
-                <span>Bank Transfers</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <span>💰</span>
-                <span>PayPal</span>
-              </div>
+      {/* Payment Methods */}
+      <div className="space-y-4 mb-6">
+        {/* Stripe Card Payment */}
+        <button
+          onClick={handleStripePayment}
+          className="w-full bg-blue-600 text-white rounded-lg px-6 py-4 font-medium hover:bg-blue-700 transition-all duration-300 flex items-center justify-center gap-3 shadow-lg"
+        >
+          <span className="text-2xl">💳</span>
+          <div className="text-left">
+            <div className="font-semibold">Pay with Card</div>
+            <div className="text-sm opacity-90">Secure payment via Stripe</div>
+          </div>
+        </button>
+
+        {/* Coming Soon Options */}
+        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+          <h4 className="text-gray-700 font-semibold mb-3 text-center">More Payment Options Coming Soon</h4>
+          <div className="grid grid-cols-2 gap-3 text-sm text-gray-600">
+            <div className="flex items-center space-x-2 opacity-60">
+              <span>📱</span>
+              <span>Mobile Money (MoMo)</span>
+            </div>
+            <div className="flex items-center space-x-2 opacity-60">
+              <span>🏦</span>
+              <span>Bank Transfers</span>
+            </div>
+            <div className="flex items-center space-x-2 opacity-60">
+              <span>💰</span>
+              <span>PayPal</span>
+            </div>
+            <div className="flex items-center space-x-2 opacity-60">
+              <span>📱</span>
+              <span>Apple Pay</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Contact Information */}
+      {/* Alternative Contact Information */}
       <div className="bg-[#B88972]/10 border border-[#B88972]/20 rounded-lg p-6 mb-6">
-        <h4 className="text-[#B88972] font-semibold mb-3 text-center">Complete Your Order Now!</h4>
+        <h4 className="text-[#B88972] font-semibold mb-3 text-center">Need Help or Prefer Other Payment Methods?</h4>
         <p className="text-gray-700 text-sm text-center mb-4">
-          Contact us directly to place your order. We'll process your payment securely and ship your jeans right away!
+          Contact us directly for alternative payment options or if you need assistance with your order!
         </p>
         
         <div className="space-y-3 text-sm">
@@ -117,29 +128,29 @@ export default function PaymentMethods({
         </div>
       </div>
 
-      {/* Action Buttons */}
-      <div className="space-y-3">
+      {/* Alternative Contact Buttons */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         <button
           onClick={() => {
-            const message = `Hi! I'd like to order:\n\nProduct: ${orderDetails.productName}\nOrder ID: ${orderDetails.orderId}\nTotal: ${currency} ${formatAmount(amount)}\n\nHow can I complete the payment?`;
-            window.open(`https://wa.me/264811234567?text=${encodeURIComponent(message)}`, '_blank');
+            const message = `Hi! I'd like to inquire about payment options for:\n\nProduct: ${orderDetails.productName}\nOrder ID: ${orderDetails.orderId}\nTotal: ${currency} ${formatAmount(amount)}\n\nCan you help me with alternative payment methods?`;
+            window.open(`https://wa.me/264816737599?text=${encodeURIComponent(message)}`, '_blank');
           }}
-          className="w-full bg-green-600 text-white rounded-lg px-6 py-3 font-medium hover:bg-green-700 transition-all duration-300 flex items-center justify-center gap-2"
+          className="w-full bg-green-600 text-white rounded-lg px-4 py-3 font-medium hover:bg-green-700 transition-all duration-300 flex items-center justify-center gap-2"
         >
           <span>💬</span>
-          <span>Order via WhatsApp</span>
+          <span>WhatsApp Support</span>
         </button>
         
         <button
           onClick={() => {
-            const subject = `Order Request - ${orderDetails.orderId}`;
-            const body = `Hi,\n\nI'd like to place an order:\n\nProduct: ${orderDetails.productName}\nOrder ID: ${orderDetails.orderId}\nTotal: ${currency} ${formatAmount(amount)}\nCustomer Email: ${orderDetails.customerEmail}\n\nPlease let me know how to complete the payment.\n\nThank you!`;
+            const subject = `Payment Inquiry - ${orderDetails.orderId}`;
+            const body = `Hi,\n\nI need help with payment options for:\n\nProduct: ${orderDetails.productName}\nOrder ID: ${orderDetails.orderId}\nTotal: ${currency} ${formatAmount(amount)}\nCustomer Email: ${orderDetails.customerEmail}\n\nCould you provide alternative payment methods?\n\nThank you!`;
             window.location.href = `mailto:orders@nubiajeans.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
           }}
-          className="w-full bg-gradient-to-r from-[#B88972] to-[#A67B5B] text-white rounded-lg px-6 py-3 font-medium hover:from-[#A67B5B] hover:to-[#B88972] transition-all duration-300 flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-[#B88972] to-[#A67B5B] text-white rounded-lg px-4 py-3 font-medium hover:from-[#A67B5B] hover:to-[#B88972] transition-all duration-300 flex items-center justify-center gap-2"
         >
           <span>📧</span>
-          <span>Order via Email</span>
+          <span>Email Support</span>
         </button>
       </div>
 
@@ -149,15 +160,15 @@ export default function PaymentMethods({
         <div className="space-y-3 text-sm text-gray-600">
           <div className="flex items-start space-x-3">
             <span className="text-[#B88972] font-bold">1.</span>
-            <span>Contact us with your order details</span>
+            <span>Choose your payment method - Card payment via Stripe or contact us for alternatives</span>
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-[#B88972] font-bold">2.</span>
-            <span>We'll send you secure payment options (Bank transfer, Mobile Money, etc.)</span>
+            <span>Complete secure payment through Stripe or arrange alternative payment</span>
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-[#B88972] font-bold">3.</span>
-            <span>Once payment is confirmed, we'll ship your jeans within 24 hours</span>
+            <span>Once payment is confirmed, we'll process and ship your jeans within 24 hours</span>
           </div>
           <div className="flex items-start space-x-3">
             <span className="text-[#B88972] font-bold">4.</span>

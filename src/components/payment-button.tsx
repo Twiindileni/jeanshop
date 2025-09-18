@@ -57,8 +57,8 @@ export function PaymentButton({
                onClick={handleClick}
                className="w-full bg-gradient-to-r from-[#B88972] to-[#A67B5B] text-white rounded-lg px-6 py-3 text-center font-medium hover:from-[#A67B5B] hover:to-[#B88972] transition-all duration-300 flex items-center justify-center gap-2"
              >
-               <span>🚧</span>
-               <span>Order Now (Payment Under Construction)</span>
+               <span>💳</span>
+               <span>Order Now</span>
              </button>
 
       {showModal && (
